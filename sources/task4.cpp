@@ -28,6 +28,12 @@ void task4(const char *bmp_name, const char *input_name) {
     words = ft_split(input[0]);
     moves_nbr = atoi(words[0]);
 
+    print_map(game);
+
+    cout << "Map Height : " << game.height << endl << "Map Width : " << game.width << endl << "Nr de miscari : " \
+            << moves_nbr << endl;
+    cout << endl;
+
     for(i = 0; i < moves_nbr; i++) {
         words = ft_split(input[i + 1]);
         name = words[0][0];
@@ -36,11 +42,11 @@ void task4(const char *bmp_name, const char *input_name) {
         // cout << "Name : " << name << " Rot : " << rot << " Col : " << col << endl;
         if(solve_tetris(game, name, rot, col)) {
             break;
-            flag++;
         }
+        if( i == moves_nbr - 1)
+            init_4_lines(game);
     }
     print_map(game);
     // cout << "AICI\n";
     draw_tetris(game, file.filename, flag);
-
 }

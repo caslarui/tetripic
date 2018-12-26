@@ -19,7 +19,7 @@ void check_full_lines(tetri_map &game) {
     for (i = 0; i < game.height; i++) {
         j = 0;
         while(j < game.width) {
-            if(game.map[i][j] == 0 )
+            if(game.map[i][j] == 0 || game.map[i][j] == 1)
                 break;
             j++;
         }
@@ -56,34 +56,13 @@ int check_colision(int row, int col, tetrimon piece, tetri_map game) {
                 }
             }
             if (j1 >= 0) {
-                if ((piece.piece[i2][j2] != 0) && (game.map[i1][j1] != 0)) {
+                if ((piece.piece[i2][j2] != 0) && (game.map[i1][j1] != 0) && (game.map[i1][j1] != 1)) {
                     return 1;
                 }
             }
         }
     }
     return 0;
-}
-
-void add_last_piece(tetri_map &game, tetrimon piece, int row, int col) {
-    int **tmp;
-    int i;
-    int j;
-    copy_array(game, tmp);
-
-    freeMatrix(game.map, game.height);
-    game.height += 4;
-    allocMatrix(game.map, game.height, game.width);
-
-    for(i = 0; i < 4; i++) {
-        for(j = 0; j < game.width; j++)
-            game.map[i][j] = 1;
-    }
-    for(i = 4; i < game.height; i++) {
-        for (j = 0; j < game.width; j++)
-            game.map[i][j] = tmp[i - 4][j];
-    }
-    store_piece(game.map, piece, row, col);
 }
 
 int solve_tetris(tetri_map &game, const char c, int rot,  int col) {
@@ -95,9 +74,9 @@ int solve_tetris(tetri_map &game, const char c, int rot,  int col) {
     rotate(piece, piece_r, rot);
     freeMatrix(piece.piece, piece.rows);
 
-    // cout << endl;
-    // print_piece(piece_r);
-    // cout << "Rows : " << piece_r.rows << " Cols : "<< piece_r.cols << endl << endl;
+    cout << endl;
+    print_piece(piece_r);
+    cout << "Rows : " << piece_r.rows << " Cols : "<< piece_r.cols << endl << endl;
 
 
     while(1) {
@@ -106,11 +85,30 @@ int solve_tetris(tetri_map &game, const char c, int rot,  int col) {
         } else
         break;
     }
+
+    cout << "Colizie pe randul : " << j << endl;
+
     if(j == 0) {
-        add_last_piece(game, piece_r, j, col);
+        init_4_lines(game);
+        while(1) {
+            if (check_colision(j, col, piece_r, game) == 0) {
+                j++;
+            } else
+                break;
+        }
+        cout << "Colizie pe randul : " << j << endl;
+
+        store_piece(game.map, piece_r, j - 1, col);
         return(1);
     }
+
+    cout << endl;
+    print_map(game);
+    cout << endl;
+
     store_piece(game.map, piece_r, j - 1, col);
+    
     check_full_lines(game);
+    freeMatrix(piece_r.piece,piece_r.rows);
     return(0);
 }

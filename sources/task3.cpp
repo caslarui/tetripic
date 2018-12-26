@@ -3,16 +3,16 @@
 
 void draw_tetris(tetri_map game, const char *filename, int flag) {
     BMP_FILE file;
-    int white_part_height;
+    // int white_part_height;
     int i;
     int j;
     int k = 0;
 
-    white_part_height = 40;
+    // white_part_height = 40;
 
     file.filename = strdup(filename);
     file.BMP_FILEINFO.width = game.width * 10;
-    file.BMP_FILEINFO.height = game.height * 10 + white_part_height;
+    file.BMP_FILEINFO.height = game.height * 10;// + white_part_height;
 
     // cout << file.BMP_FILEINFO.height <<endl;
 
@@ -21,15 +21,15 @@ void draw_tetris(tetri_map game, const char *filename, int flag) {
         file.BMP_COLORS[i] = new bmp_pixelcolor[file.BMP_FILEINFO.width];
 
     k = file.BMP_FILEINFO.height - 1;
-    for (i = 0; i < white_part_height; i++) {
-        for (j = 0; j < file.BMP_FILEINFO.width; j++)
-            white(file.BMP_COLORS[k][j]);
-        k--;
-    }
+    // for (i = 0; i < white_part_height; i++) {
+    //     for (j = 0; j < file.BMP_FILEINFO.width; j++)
+    //         white(file.BMP_COLORS[k][j]);
+    //     k--;
+    // }
 
-    for ( i = white_part_height;  i < file.BMP_FILEINFO.height; i++) {
+    for ( i = 0;  i < file.BMP_FILEINFO.height; i++) {
         for (j = 0; j < file.BMP_FILEINFO.width; j++)
-            parse_color(file.BMP_COLORS[k][j], game.map[(i - white_part_height) / 10][j / 10]);
+            parse_color(file.BMP_COLORS[k][j], game.map[i / 10][j / 10]);
         k--;
     }
     writeBMP(file);
@@ -57,20 +57,26 @@ void task3(const char *filename) {
 
     allocMatrix(game.map, game.height, game.width);
 
-    // cout << "Map Height : " << game.height << endl << "Map Width : " << game.width << endl << "Nr de miscari : " \
-            << moves_nbr << endl;
+    print_map(game);
 
-    // print_map(game);
+    cout << "Map Height : " << game.height << endl << "Map Width : " << game.width << endl << "Nr de miscari : " \
+            << moves_nbr << endl;
+    cout << endl;
 
     for(i = 0; i < moves_nbr; i++) {
         params = ft_split(input[i + 1]);
         name = params[0][0];
         rot = atoi(params[1]);
         col = atoi(params[2]);
-        // cout << "Name : " << name << " Rot : " << rot << " Col : " << col << endl;
-        if(solve_tetris(game, name, rot, col))
+        cout << "Name : " << name << " Rot : " << rot << " Col : " << col << endl;
+        if(solve_tetris(game, name, rot, col)) {
+            // init_4_lines(game);
             break;
+        }
+        if( i == moves_nbr - 1)
+            init_4_lines(game);
     }
+    print_map(game);
     // cout << "AICI\n";
     draw_tetris(game, "task3.bmp", 0);
 }

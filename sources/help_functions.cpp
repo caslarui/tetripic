@@ -140,3 +140,27 @@ void parse_map(bmp_pixelcolor **pixel, tetri_map game) {
         k--;
     }
 }
+
+void init_4_lines(tetri_map &game) {
+    int i;
+    int j;
+    int **tmp;
+
+    copy_array(game, tmp);
+    freeMatrix(game.map, game.height);
+
+    game.height += 4;
+
+    allocMatrix(game.map, game.height, game.width);
+
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < game.width; j++)
+            game.map[i][j] = 1;
+    }
+    for (i = 4; i < game.height; i++) {
+        for (j = 0; j < game.width; j++)
+            game.map[i][j] = tmp[i - 4][j];
+    }
+    freeMatrix(tmp, game.height - 4);
+    tmp = NULL;
+}

@@ -84,6 +84,8 @@ int     count_lines(const char *filename);
 
 void    parse_map(bmp_pixelcolor **pixel, tetri_map game);
 
+void    init_4_lines(tetri_map &game);
+
 //***********************************************************
 
 //Task functions
